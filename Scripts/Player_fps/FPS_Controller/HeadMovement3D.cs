@@ -7,13 +7,13 @@ public partial class HeadMovement3D : Marker3D
     // Node that moves the character's head
     // To move just call the function RotateCamera
     
-    // Mouse sensitivity of rotation move
-    [Export] public float MouseSensitivity { get; set; } = 2.0f;
+    /// Mouse sensitivity of rotation move
+    public float MouseSensitivity { get; set; } = 2.0f;
     
-    // Vertical angle limit of rotation move
-    [Export] public float VerticalAngleLimit { get; set; } = 90.0f;
+    /// Vertical angle limit of rotation move
+    public float VerticalAngleLimit { get; set; } = 90.0f;
     
-    // Actual rotation of movement
+    /// Actual rotation of movement
     public Vector3 ActualRotation = Vector3.Zero;
 
     public override void _Ready()
@@ -21,20 +21,29 @@ public partial class HeadMovement3D : Marker3D
         ActualRotation.Y = GetOwner<Player>().Rotation.Y;
     }
     
-    // Defines mouse sensitivity
+    /// <summary>
+    /// Defines mouse sensitivity
+    /// </summary>
+    /// <param name="sens">Mouse sensitivity</param>
     public void SetMouseSensitivity(float sens)
     {
         MouseSensitivity = sens;
     }
     
-    // Defines vertical angle limit for rotation movement of head
+    /// <summary>
+    /// Defines vertical angle limit for rotation movement of head
+    /// </summary>
+    /// <param name="limit">angle limit</param>
     public void SetVerticalAngleLimit(float limit)
     {
         VerticalAngleLimit = Mathf.DegToRad(limit);
     }
     
-    // Rotates the head of the character that contains camera used by [FPSController3D]
-    // Vector2 is sent with reference to the input of a mouse as an example
+    /// <summary>
+    /// <para>Rotates the head of the character that contains camera used by <see cref="FPSController3D"/></para>
+    /// <para>Vector2 is sent with reference to the input of a mouse as an example</para>
+    /// </summary>
+    /// <param name="mouseAxis">Vector2</param>
     public void RotateCamera(Vector2 mouseAxis)
     {
         // Horizontal mouse look

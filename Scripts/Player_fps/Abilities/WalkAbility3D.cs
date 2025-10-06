@@ -13,6 +13,15 @@ public partial class WalkAbility3D : MovementAbility3D
     [Export(PropertyHint.Range, "0.0, 1.0, 0.05")]
     public float AirControl { get; set; } = 0.3f;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="velocity"></param>
+    /// <param name="speed"></param>
+    /// <param name="isOnFloor"></param>
+    /// <param name="direction"></param>
+    /// <param name="delta"></param>
+    /// <returns></returns>
     public override Vector3 Apply(Vector3 velocity, float speed, bool isOnFloor, Vector3 direction, double delta)
     {
         // Check when ability is active. Return current velocity if ability is not active

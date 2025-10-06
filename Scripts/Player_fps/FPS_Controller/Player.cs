@@ -22,6 +22,7 @@ public partial class Player : FPSController3D
     [Export] public string InputRightActionName { get; set; } = "move_right";
     [Export] public string InputJumpActionName { get; set; } = "move_jump";
     [Export] public string InputCrouchActionName { get; set; } = "move_crouch";
+    [Export] public string InputChangeMouseModeActionName { get; set; } = "m_button2";
 
     public override void _Ready()
     {
@@ -40,7 +41,6 @@ public partial class Player : FPSController3D
                 InputForwardActionName);
             var inputJump = Input.IsActionJustPressed(InputJumpActionName);
             var inputCrouch = Input.IsActionPressed(InputCrouchActionName);
-            // GD.Print($"delta: {delta}\ninputAxis: {inputAxis}\ninputJump: {inputJump}\ninputCrouch: {inputCrouch}\n");
             Move(delta, inputAxis, inputJump, inputCrouch);
         }
         else
@@ -59,7 +59,7 @@ public partial class Player : FPSController3D
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (Input.IsActionJustPressed("m_button2"))
+        if (Input.IsActionJustPressed(InputChangeMouseModeActionName))
         {
             var mouseMode = Input.GetMouseMode() == Input.MouseModeEnum.Captured
                 ? Input.MouseModeEnum.Visible

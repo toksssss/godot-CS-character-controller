@@ -9,23 +9,23 @@ public partial class MovementAbility3D : Node3D
     // It contains a flag to enable/disable movement skill, signals emitted when this was modified
 
     [Export] public bool Active { get; set; }
-    public bool LastActive;
+    private bool _lastActive;
 
     /// <summary>
-    /// <para>Emitted when ability has been active, is called when <b>SetActive()</b> is set to true</para>
+    /// <para>Emitted when ability has been active, is called when <see cref="MovementAbility3D.SetActive"/> is set to true</para>
     /// </summary>
     [Signal]
     public delegate void ActivatedEventHandler();
     
     /// <summary>
-    /// <para>Emitted when ability has been active, is called when <b>SetActive()</b> is set to false</para>
+    /// <para>Emitted when ability has been active, is called when <see cref="MovementAbility3D.SetActive"/> is set to true</para>
     /// </summary>
     [Signal]
     public delegate void DeactivatedEventHandler();
 
     /// <summary>
-    /// <para>Returns a speed modifier,</para>
-    /// <para>Useful for abilities that when active can change the overall speed of the <b>CharacterController3D</b></para>
+    /// <para>Returns a speed modifier (default is <b>1.0</b>)</para>
+    /// <para>Useful for abilities that when active can change the overall speed of the <see cref="CharacterController3D"/></para>
     /// </summary>
     public virtual float GetSpeedModifier()
     {
@@ -45,23 +45,19 @@ public partial class MovementAbility3D : Node3D
     /// </summary>
     public void SetActive(bool a)
     {
-        LastActive = Active;
+        _lastActive = Active;
         Active = a;
-        if (LastActive != Active)
+        if (_lastActive != Active)
         {
-            if (Active)
-            {
-                EmitSignal(SignalName.Activated);
-            }
-            else
-            {
-                EmitSignal(SignalName.Deactivated);
-            }
+            var signalName = Active 
+                ? SignalName.Activated
+                : SignalName.Deactivated;
+            EmitSignal(signalName);
         }
     }
 
     /// <summary>
-    /// <para>Change the current velocity of <b>CharacterController3D</b></para>
+    /// <para>Change the current velocity of <see cref="CharacterController3D"/></para>
     /// <para>In this function abilities can change the way the character controller behaves based on speed and other
     /// params</para>
     /// </summary>

@@ -35,7 +35,7 @@ public partial class FPSController3D : CharacterController3D
         set
         {
             _mouseSensitivity = value;
-            Head.MouseSensitivity = _mouseSensitivity; 
+            _head.MouseSensitivity = _mouseSensitivity; 
         }
     }
 
@@ -67,19 +67,19 @@ public partial class FPSController3D : CharacterController3D
     
     // References
 
-    public HeadMovement3D Head;
-    public Marker3D FirstPersonCameraReference;
-    public Marker3D ThirdPersonCameraReference;
-    public HeadBob HeadBob;
+    private HeadMovement3D _head;
+    private Marker3D _firstPersonCameraReference;
+    private Marker3D _thirdPersonCameraReference;
+    private HeadBob _headBob;
 
     public override void _Ready()
     {
         base._Ready();
         
-        Head = GetNode<HeadMovement3D>("Head");
-        FirstPersonCameraReference = GetNode<Marker3D>("Head/FirstPersonCameraReference");
-        ThirdPersonCameraReference = GetNode<Marker3D>("Head/ThirdPersonCameraReference");
-        HeadBob = GetNode<HeadBob>("Head/HeadBob");
+        _head = GetNode<HeadMovement3D>("Head");
+        _firstPersonCameraReference = GetNode<Marker3D>("Head/FirstPersonCameraReference");
+        _thirdPersonCameraReference = GetNode<Marker3D>("Head/ThirdPersonCameraReference");
+        _headBob = GetNode<HeadBob>("Head/HeadBob");
     }
 
     public override void Setup()
@@ -87,22 +87,22 @@ public partial class FPSController3D : CharacterController3D
         base.Setup();
         
         // TODO: rewrite this piece of crap
-        Head.SetMouseSensitivity(MouseSensitivity);
-        Head.SetVerticalAngleLimit(VerticalAngleLimit);
-        HeadBob.StepBobEnabled = StepBobEnabled;
-        HeadBob.JumpBobEnabled = JumpBobEnabled;
-        HeadBob.RotationToMove = RotationToMove;
-        HeadBob.SpeedRotation = SpeedRotation;
-        HeadBob.AngleLimitForRotation = AngleLimitForRotation;
-        HeadBob.VerticalHorizontalRatio = VerticalHorizontalRatio;
-        HeadBob.SetupStepBob(StepInterval * 2); // why 2?
+        _head.SetMouseSensitivity(MouseSensitivity);
+        _head.SetVerticalAngleLimit(VerticalAngleLimit);
+        _headBob.StepBobEnabled = StepBobEnabled;
+        _headBob.JumpBobEnabled = JumpBobEnabled;
+        _headBob.RotationToMove = RotationToMove;
+        _headBob.SpeedRotation = SpeedRotation;
+        _headBob.AngleLimitForRotation = AngleLimitForRotation;
+        _headBob.VerticalHorizontalRatio = VerticalHorizontalRatio;
+        _headBob.SetupStepBob(StepInterval * 2); // why 2?
     }
     
     // Rotate head based on mouse axis parameter.
     // This function call Head.RotateCamera()
     public void RotateHead(Vector2 mouseAxis)
     {
-        Head.RotateCamera(mouseAxis);
+        _head.RotateCamera(mouseAxis);
     }
     
     // Call to move the character
@@ -120,15 +120,16 @@ public partial class FPSController3D : CharacterController3D
 
     private void CheckHeadBob(double delta, Vector2 inputAxis)
     {
-        HeadBob.HeadBobProcess(HorizontalVelocity, inputAxis, IsOnFloor(), delta);
+        _headBob.HeadBobProcess(HorizontalVelocity, inputAxis, IsOnFloor(), delta);
         
     }
 
     public override void OnJumped()
     {
         base.OnJumped();
-        HeadBob.DoBobJump();
-        HeadBob.ResetCycles();
+        
+        _headBob.DoBobJump();
+        _headBob.ResetCycles();
     }
 
 

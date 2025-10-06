@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://w4b0nfa1sfxr"]
+
+[ext_resource type="PackedScene" uid="uid://2lwqq3vqjkbu" path="res://Models/dungeon_assets/props/coin_stack.glb" id="1_vjqv5"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bijgb"]
+size = Vector3(1.43188, 1.1687, 1)
+
+[node name="coin_stack" type="StaticBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00354004, 0.579956, 0)
+shape = SubResource("BoxShape3D_bijgb")
+
+[node name="coin_stack" parent="." instance=ExtResource("1_vjqv5")]

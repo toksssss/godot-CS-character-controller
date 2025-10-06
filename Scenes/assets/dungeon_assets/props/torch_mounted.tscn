@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://cnf8ne0rofyw8"]
+
+[ext_resource type="PackedScene" uid="uid://oumv4yx4upef" path="res://Models/dungeon_assets/props/torch_mounted.glb" id="1_062b2"]
+[ext_resource type="Script" uid="uid://gxx1dcv03xbd" path="res://Scenes/assets/dungeon_assets/props/TorchMounted.cs" id="1_xfvj7"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_xfvj7"]
+radius = 0.358025
+height = 1.29948
+
+[node name="torch_mounted" type="StaticBody3D"]
+script = ExtResource("1_xfvj7")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.820741, -0.0611648, -0.568017, -0.0935345, 0.96645, -0.239219, 0.563592, 0.249466, 0.787484, 0.00319197, 0.242138, 0.249603)
+shape = SubResource("CapsuleShape3D_xfvj7")
+
+[node name="Light" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.812565, 0.361036)
+light_color = Color(0.86, 0.59856, 0.2064, 1)
+light_energy = 1.5
+light_size = 0.5
+shadow_enabled = true
+distance_fade_enabled = true
+omni_range = 3.5
+omni_attenuation = 2.0
+
+[node name="torch_mounted2" parent="." instance=ExtResource("1_062b2")]

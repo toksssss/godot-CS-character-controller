@@ -1,0 +1,60 @@
+[gd_scene load_steps=10 format=3 uid="uid://qj5aqehigr8c"]
+
+[ext_resource type="Script" uid="uid://w7x7q2d7umyr" path="res://Scripts/Player_fps/FPS_Controller/Player.cs" id="1_x3wgy"]
+[ext_resource type="Script" uid="uid://dy27rwpn1yrbj" path="res://Scripts/Player_fps/Abilities/CrouchAbility3D.cs" id="2_3smsa"]
+[ext_resource type="Script" uid="uid://dq8wm3blkvpkl" path="res://Scripts/Player_fps/Abilities/JumpAbility3D.cs" id="3_8erm5"]
+[ext_resource type="Script" uid="uid://cdgyhhtysapta" path="res://Scripts/Player_fps/Abilities/WalkAbility3D.cs" id="4_f1ek2"]
+[ext_resource type="Script" uid="uid://c1xqp42c5hoxa" path="res://Scripts/Player_fps/FPS_Controller/HeadMovement3D.cs" id="5_tx1dd"]
+[ext_resource type="Script" uid="uid://dudjrsgkav2t3" path="res://Scripts/Player_fps/FPS_Controller/HeadBob.cs" id="6_gymyn"]
+[ext_resource type="Curve" path="res://Scenes/bob_curve.tres" id="7_3smsa"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_pu2lt"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_x3wgy"]
+
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("Abilities")]
+script = ExtResource("1_x3wgy")
+InputBackActionName = "move_back"
+InputJumpActionName = "jump"
+InputCrouchActionName = "crouch"
+Abilities = [NodePath("CrouchAbility"), NodePath("JumpAbility"), NodePath("WalkAbility")]
+metadata/_custom_type_script = "uid://w7x7q2d7umyr"
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_pu2lt")
+
+[node name="HeadCheck" type="ShapeCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4995933, 0)
+shape = SubResource("SphereShape3D_x3wgy")
+
+[node name="CrouchAbility" type="Node3D" parent="." node_paths=PackedStringArray("Collision", "HeadCheck")]
+script = ExtResource("2_3smsa")
+Collision = NodePath("../Collision")
+HeadCheck = NodePath("../HeadCheck")
+metadata/_custom_type_script = "uid://dy27rwpn1yrbj"
+
+[node name="JumpAbility" type="Node3D" parent="."]
+script = ExtResource("3_8erm5")
+metadata/_custom_type_script = "uid://dq8wm3blkvpkl"
+
+[node name="WalkAbility" type="Node3D" parent="."]
+script = ExtResource("4_f1ek2")
+metadata/_custom_type_script = "uid://cdgyhhtysapta"
+
+[node name="Head" type="Marker3D" parent="."]
+script = ExtResource("5_tx1dd")
+metadata/_custom_type_script = "uid://c1xqp42c5hoxa"
+
+[node name="HeadBob" type="Node" parent="Head" node_paths=PackedStringArray("Head")]
+script = ExtResource("6_gymyn")
+Head = NodePath("../FirstPersonCameraReference/Camera3D")
+BobCurve = ExtResource("7_3smsa")
+metadata/_custom_type_script = "uid://dudjrsgkav2t3"
+
+[node name="FirstPersonCameraReference" type="Marker3D" parent="Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.64111686, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Head/FirstPersonCameraReference"]
+
+[node name="ThirdPersonCameraReference" type="Marker3D" parent="Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6689716, 2.12152)

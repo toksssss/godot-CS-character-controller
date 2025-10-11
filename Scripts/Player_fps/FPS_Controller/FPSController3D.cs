@@ -110,12 +110,12 @@ public partial class FPSController3D : CharacterController3D
     // based on whether swim or fly mode is active
     // After, the Move() of the base class [CharacterMovement3D] is called
     // It is then called functions responsible for head bob if necessary.
-    public void Move(double delta, Vector2 inputAxis, bool inputJump, bool inputCrouch, bool inputSprint = false, bool inputSwimDown = false, bool inputSwimUp = false)
+    public override void Move(double delta, Vector2 inputAxis = new Vector2(), bool inputJump = false, bool inputCrouch = false,
+        bool inputSwimDown = false, bool inputSwimUp = false)
     {
         DirectionBaseNode = this;
-        base.Move(delta, inputAxis, inputJump, inputCrouch);
+        base.Move(delta, inputAxis, inputJump, inputCrouch, inputSwimDown, inputSwimUp);
         CheckHeadBob(delta, inputAxis);
-        
     }
 
     private void CheckHeadBob(double delta, Vector2 inputAxis)

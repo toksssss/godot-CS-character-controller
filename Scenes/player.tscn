@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://qj5aqehigr8c"]
+[gd_scene load_steps=11 format=3 uid="uid://qj5aqehigr8c"]
 
 [ext_resource type="Script" uid="uid://w7x7q2d7umyr" path="res://Scripts/Player_fps/FPS_Controller/Player.cs" id="1_x3wgy"]
 [ext_resource type="Script" uid="uid://dy27rwpn1yrbj" path="res://Scripts/Player_fps/Abilities/CrouchAbility3D.cs" id="2_3smsa"]
@@ -11,6 +11,9 @@
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_pu2lt"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_x3wgy"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_3smsa"]
+height = 1.5
 
 [node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("Abilities")]
 script = ExtResource("1_x3wgy")
@@ -27,10 +30,8 @@ shape = SubResource("CapsuleShape3D_pu2lt")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4995933, 0)
 shape = SubResource("SphereShape3D_x3wgy")
 
-[node name="CrouchAbility" type="Node3D" parent="." node_paths=PackedStringArray("Collision", "HeadCheck")]
+[node name="CrouchAbility" type="Node3D" parent="."]
 script = ExtResource("2_3smsa")
-Collision = NodePath("../Collision")
-HeadCheck = NodePath("../HeadCheck")
 metadata/_custom_type_script = "uid://dy27rwpn1yrbj"
 
 [node name="JumpAbility" type="Node3D" parent="."]
@@ -58,3 +59,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.64111686, 0)
 
 [node name="ThirdPersonCameraReference" type="Marker3D" parent="Head"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6689716, 2.12152)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2571721, 0)
+mesh = SubResource("CapsuleMesh_3smsa")

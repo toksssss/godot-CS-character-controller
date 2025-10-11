@@ -191,12 +191,18 @@ public partial class CharacterController3D : CharacterBody3D
     private WalkAbility3D _walkAbility;
     private CrouchAbility3D _crouchAbility;
     private JumpAbility3D _jumpAbility;
+    private ClimbingLadderAbility3D _climbingLadderAbility;
     
     // Store
 
     private float _normalSpeed;
     private bool _lastIsOnFloor;
     private float _defaultHeight;
+    
+    private bool _isClimbingLadder;
+    private bool _wasClimbingLadder;
+    private Area3D _curLadderClimbing;
+    
 
     public override void _Ready()
     {
@@ -220,21 +226,26 @@ public partial class CharacterController3D : CharacterBody3D
         StartVariables();
     }
 
-    public void Move(double delta, Vector2 inputAxis = new Vector2(), bool inputJump = false, bool inputCrouch = false,
+    public virtual void Move(double delta, Vector2 inputAxis = new(), bool inputJump = false, bool inputCrouch = false,
         bool inputSwimDown = false, bool inputSwimUp = false)
     {
         var direction = DirectionInput(inputAxis, inputSwimDown, inputSwimUp, DirectionBaseNode);
         CheckLanded();
 
-        if (!_jumpAbility.IsActivated())
+        if (!_jumpAbility.IsActivated() && !_climbingLadderAbility.IsActivated())
         {
             Velocity += GetGravity() * GravityMultiplier * (float)delta;
         }
+        
+        if ()
         
         // Abilities activation conditions
         _jumpAbility.SetActive(inputJump && IsOnFloor() && !_headCheck.IsColliding());
         _walkAbility.SetActive(true);
         _crouchAbility.SetActive(inputCrouch && IsOnFloor());
+        
+        _climbingLadderAbility.SetActive(_isClimbingLadder);
+        
 
         var multiplier = 1.0f;
         foreach (var ability in Abilities)
@@ -316,11 +327,41 @@ public partial class CharacterController3D : CharacterBody3D
             _direction -= aim.X;
         }
 
-        // NOTE: For free-flying and swimming movements
+        // NOTE: For free-flying, swimming, climbing ladders etc.
+        // if (_crouchAbility.IsActivated())
+        // {
+        //     
+        // }
         
         _direction.Y = 0;
         
         return _direction.Normalized();
+    }
+
+    public void SetLadderState()
+    {
+        _wasClimbingLadder = _curLadderClimbing != null && _curLadderClimbing.OverlapsBody(this);
+        if (!_wasClimbingLadder)
+        {
+            _curLadderClimbing = null;
+            foreach (var ladder in GetTree().GetNodesInGroup("LadderArea3D"))
+            {
+                if (ladder is Area3D ladder3d && ladder3d.OverlapsBody(this))
+                {
+                    _curLadderClimbing = ladder3d;
+                    break;
+                }
+            }
+        }
+
+        if (_curLadderClimbing == null)
+        {
+            _isClimbingLadder = false;
+            return;
+        }
+
+        _isClimbingLadder = true;
+
     }
 
     private void CheckLanded()
@@ -379,6 +420,11 @@ public partial class CharacterController3D : CharacterBody3D
         }
 
         return false;
+    }
+
+    public bool IsClimbingLadder()
+    {
+        return _crouchAbility.IsActivated();
     }
     
     

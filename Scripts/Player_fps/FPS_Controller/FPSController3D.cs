@@ -71,6 +71,7 @@ public partial class FPSController3D : CharacterController3D
     private Marker3D _firstPersonCameraReference;
     private Marker3D _thirdPersonCameraReference;
     private HeadBob _headBob;
+    
 
     public override void _Ready()
     {

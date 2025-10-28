@@ -439,11 +439,4 @@ public partial class CharacterController3D : CharacterBody3D
     {
         return _climbingLadderAbility.IsActivated();
     }
-    
-
-
-
-
-
-
 }

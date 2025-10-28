@@ -191,12 +191,19 @@ public partial class CharacterController3D : CharacterBody3D
     private WalkAbility3D _walkAbility;
     private CrouchAbility3D _crouchAbility;
     private JumpAbility3D _jumpAbility;
+    private ClimbingLadderAbility3D _climbingLadderAbility;
     
     // Store
 
     private float _normalSpeed;
     private bool _lastIsOnFloor;
     private float _defaultHeight;
+    
+    // private bool _isClimbingLadder;
+    // private bool _wasClimbingLadder;
+    // private Area3D _curLadderClimbing;
+
+    private Vector3 _wishDir;
 
     public override void _Ready()
     {
@@ -206,6 +213,7 @@ public partial class CharacterController3D : CharacterBody3D
         _walkAbility = GetNode<WalkAbility3D>("WalkAbility");
         _crouchAbility = GetNode<CrouchAbility3D>("CrouchAbility");
         _jumpAbility = GetNode<JumpAbility3D>("JumpAbility");
+        _climbingLadderAbility = GetNode<ClimbingLadderAbility3D>("ClimbingLadderAbility");
 
         _normalSpeed = Speed;
     }
@@ -220,21 +228,24 @@ public partial class CharacterController3D : CharacterBody3D
         StartVariables();
     }
 
-    public void Move(double delta, Vector2 inputAxis = new Vector2(), bool inputJump = false, bool inputCrouch = false,
+    public virtual void Move(double delta, Vector2 inputAxis = new(), bool inputJump = false, bool inputCrouch = false,
         bool inputSwimDown = false, bool inputSwimUp = false)
     {
+        // Abilities activation conditions
+        _jumpAbility.SetActive(inputJump && IsOnFloor() && !_headCheck.IsColliding() && !_climbingLadderAbility.IsActivated());
+        _walkAbility.SetActive(true);
+        _crouchAbility.SetActive(inputCrouch && IsOnFloor());
+        _climbingLadderAbility.SetActive(HandleLadderState());
+        
         var direction = DirectionInput(inputAxis, inputSwimDown, inputSwimUp, DirectionBaseNode);
         CheckLanded();
-
-        if (!_jumpAbility.IsActivated())
+        
+        
+        if (!_jumpAbility.IsActivated() && !_climbingLadderAbility.IsActivated())
         {
             Velocity += GetGravity() * GravityMultiplier * (float)delta;
         }
         
-        // Abilities activation conditions
-        _jumpAbility.SetActive(inputJump && IsOnFloor() && !_headCheck.IsColliding());
-        _walkAbility.SetActive(true);
-        _crouchAbility.SetActive(inputCrouch && IsOnFloor());
 
         var multiplier = 1.0f;
         foreach (var ability in Abilities)
@@ -248,7 +259,7 @@ public partial class CharacterController3D : CharacterBody3D
         {
             Velocity = ability.Apply(Velocity, Speed, IsOnFloor(), direction, delta);
         }
-
+        
         MoveAndSlide();
         HorizontalVelocity = new Vector3(Velocity.X, 0, Velocity.Z);
 
@@ -260,6 +271,15 @@ public partial class CharacterController3D : CharacterBody3D
         _crouchAbility.Activated += OnCrouched;
         _crouchAbility.Deactivated += OnUncrouched;
         _jumpAbility.Activated += OnJumped;
+        
+        foreach (var ladder in GetTree().GetNodesInGroup("LadderArea3D"))
+        {
+            if (ladder is Ladder ladder3d)
+            {
+                ladder3d.BodyEnteredLadder += OnLadderBodyEntered;
+                ladder3d.BodyExitedLadder += OnLadderBodyExited;
+            }
+        }
     }
 
     private void OnCrouched()
@@ -316,9 +336,15 @@ public partial class CharacterController3D : CharacterBody3D
             _direction -= aim.X;
         }
 
-        // NOTE: For free-flying and swimming movements
-        
-        _direction.Y = 0;
+        // NOTE: For free-flying, swimming, climbing ladders etc.
+        if (_climbingLadderAbility.IsActivated())
+        {
+            _climbingLadderAbility.WishDir = GlobalTransform.Basis * new Vector3(input.X, 0, input.Y);
+        }
+        else
+        {
+            _direction.Y = 0;
+        }
         
         return _direction.Normalized();
     }
@@ -381,11 +407,36 @@ public partial class CharacterController3D : CharacterBody3D
         return false;
     }
     
+    private void OnLadderBodyEntered(Node3D body, Ladder ladder)
+    {
+        if (body == this)
+        {
+            GD.Print("Entered");
+            _climbingLadderAbility.CurrentLadderClimbing = ladder;
+        }
+    }
     
+    private void OnLadderBodyExited(Node3D body, Ladder ladder)
+    {
+        if (body == this)
+        {
+            GD.Print("Exited");
+            _climbingLadderAbility.CurrentLadderClimbing = null;
+        }
+    }
 
+    public bool HandleLadderState()
+    {
+        if (_climbingLadderAbility.CurrentLadderClimbing == null)
+        {
+            return false;
+        }
 
+        return true;
+    }
 
-
-
-
+    public bool IsClimbing()
+    {
+        return _climbingLadderAbility.IsActivated();
+    }
 }

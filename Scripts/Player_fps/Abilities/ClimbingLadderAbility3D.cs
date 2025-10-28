@@ -30,11 +30,11 @@ public partial class ClimbingLadderAbility3D : MovementAbility3D
         Vector3 posRelToLadder;
         if (ladderGTransform.Basis.Determinant() != 0)
         {
-            posRelToLadder = CurrentLadderClimbing.GlobalTransform.AffineInverse() * GlobalPosition;
+            posRelToLadder = ladderGTransform.AffineInverse() * GlobalPosition;
         }
         else
         {
-            posRelToLadder = CurrentLadderClimbing.GlobalTransform.Inverse() * GlobalPosition;
+            posRelToLadder = ladderGTransform.Inverse() * GlobalPosition;
         }
 
         var camera = GetNode<Camera3D>("../Head/FirstPersonCameraReference/Camera3D");
@@ -53,11 +53,25 @@ public partial class ClimbingLadderAbility3D : MovementAbility3D
 
         var camForwardAmount = GetNode<Camera3D>("../Head/FirstPersonCameraReference/Camera3D").Basis.Z
             .Dot(CurrentLadderClimbing.Basis.Z);
-        var upWish = Vector3.Up.Rotated(new Vector3(1, 0, 0), Mathf.DegToRad(-45 * camForwardAmount))
+        var upWish = Vector3.Up.Rotated(new Vector3(1, 0, 0), Mathf.DegToRad(-45))
             .Dot(ladderForwardMove);
-        ladderClimbVel +=  _climbSpeed * upWish;    
-        
-        var shouldDismount = isOnFloor && ladderClimbVel <= 0;
+        ladderClimbVel +=  _climbSpeed * upWish;
+
+        var shouldDismount = false;
+
+        var mountingFromTop = posRelToLadder.Y > CurrentLadderClimbing.GetNode<Node3D>("TopOfLadder").Position.Y;
+        if (mountingFromTop)
+        {
+            if (ladderClimbVel > 0)
+            {
+                shouldDismount = true;
+            }
+        }
+
+        if (isOnFloor && ladderClimbVel <= 0)
+        {
+            shouldDismount = true;
+        }
 
         if (shouldDismount)
         {
@@ -67,7 +81,7 @@ public partial class ClimbingLadderAbility3D : MovementAbility3D
 
         if (Input.IsActionJustPressed("jump"))
         {
-            velocity = CurrentLadderClimbing.GlobalTransform.Basis.Z * 15;
+            velocity = ladderGTransform.Basis.Z * 15;
             CurrentLadderClimbing = null;
             return velocity;
         }

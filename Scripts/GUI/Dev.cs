@@ -14,7 +14,7 @@ public partial class Dev : Label
 	public override void _Process(double delta)
 	{
 		Text = $"PLAYER\n" +
-		       $"Velocity: {_player.Velocity}" +
-		       $"Climbing: ";
+		       $"Velocity: {_player.Velocity}\n" +
+		       $"Climbing: {_player.IsClimbing()}";
 	}
 }

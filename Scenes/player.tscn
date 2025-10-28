@@ -54,7 +54,7 @@ metadata/_custom_type_script = "uid://c1xqp42c5hoxa"
 
 [node name="HeadBob" type="Node" parent="Head" node_paths=PackedStringArray("Head")]
 script = ExtResource("6_gymyn")
-Head = NodePath("../ThirdPersonCameraReference/Camera3D")
+Head = NodePath("../FirstPersonCameraReference")
 BobCurve = ExtResource("7_3smsa")
 metadata/_custom_type_script = "uid://dudjrsgkav2t3"
 
@@ -62,14 +62,11 @@ metadata/_custom_type_script = "uid://dudjrsgkav2t3"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.64111686, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Head/FirstPersonCameraReference"]
+current = true
 fov = 109.9
 
 [node name="ThirdPersonCameraReference" type="Marker3D" parent="Head"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6689716, 2.12152)
-
-[node name="Camera3D" type="Camera3D" parent="Head/ThirdPersonCameraReference"]
-current = true
-fov = 125.6
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2571721, 0)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://4cigwo5dmcgi"]
+[gd_scene load_steps=27 format=3 uid="uid://4cigwo5dmcgi"]
 
 [ext_resource type="PackedScene" uid="uid://bmxqqmr84o8og" path="res://Scenes/assets/chest.tscn" id="3_8gbba"]
 [ext_resource type="PackedScene" uid="uid://cby4bghmwymti" path="res://Scenes/assets/dungeon_assets/building/floor_wood.tscn" id="3_21xkr"]
@@ -18,6 +18,7 @@
 [ext_resource type="PackedScene" uid="uid://clm8gq7a83773" path="res://Scenes/assets/dungeon_assets/building/wall_doorway.tscn" id="17_b3802"]
 [ext_resource type="PackedScene" uid="uid://d3xe16gj7i1nj" path="res://Scenes/assets/dungeon_assets/building/wall_shelved.tscn" id="18_b3802"]
 [ext_resource type="PackedScene" uid="uid://dlnu40k428rfl" path="res://Scenes/assets/dungeon_assets/building/pillar.tscn" id="19_fevyy"]
+[ext_resource type="Script" uid="uid://klw5eooioa4d" path="res://Scripts/Ladders/Ladder.cs" id="20_ee4r6"]
 [ext_resource type="PackedScene" uid="uid://qj5aqehigr8c" path="res://Scenes/player.tscn" id="20_hibaj"]
 [ext_resource type="PackedScene" uid="uid://bixfl7py8pwhb" path="res://Scenes/ladder.tscn" id="20_pdsj5"]
 
@@ -351,13 +352,15 @@ size = Vector3(0.2, 12.1123295, 0.1940918)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0513439, -0.2819214, -0.4029541)
 size = Vector3(0.2, 12.1123295, 0.1940918)
 
-[node name="LadderArea3D" type="Area3D" parent="Ladder" groups=["LadderArea3D"]]
+[node name="Ladder" type="Area3D" parent="Ladder" groups=["LadderArea3D"]]
+script = ExtResource("20_ee4r6")
+metadata/_custom_type_script = "uid://dpdh6v65b7fmw"
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Ladder/LadderArea3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ladder/Ladder"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.12738419, -0.32434082, -0.13432217)
 shape = SubResource("BoxShape3D_fevyy")
 
-[node name="TopOfLadder" type="Node3D" parent="Ladder/LadderArea3D"]
+[node name="TopOfLadder" type="Node3D" parent="Ladder/Ladder"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.638644, 0.24195766)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Ladder"]
